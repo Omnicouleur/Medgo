@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Background from './images/bg-01.jpg';
 import  { Field } from './Field';
@@ -35,9 +34,7 @@ class ContactForm extends Component {
     }
 
     componentDidMount() {
-      this.callApi()
-        .then(res => this.setState({ response: res.express }))
-        .catch(err => console.log(err));
+     
     }
     handleUserInput = (e) => {
     const name = e.target.name;
@@ -70,7 +67,7 @@ class ContactForm extends Component {
     }
 
     valideMail = (mail) => {
-      const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      const mailformat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/;
       if( mail.match(mailformat))
       {
           this.setState ({isMailValid : true})
@@ -84,7 +81,7 @@ class ContactForm extends Component {
       }
     }
     valideMessage = (message) => {
-      if (message == ''){
+      if (message === ''){
         this.setState ({isMessageValid : false})
           return false;
       }
@@ -92,7 +89,6 @@ class ContactForm extends Component {
         this.setState ({isMessageValid : true})
         return true;
       }
-      return true;
     }
     valideName = (name) => {
       return true;
@@ -115,32 +111,22 @@ class ContactForm extends Component {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ post: this.state.email }),
+      body: JSON.stringify({ name: this.state.name, 
+                             email: this.state.email,
+                             message: this.state.message }),
     });
     const body = await response.text();
 
     this.setState({ responseToPost: body });
+    
+    this.callApi()
+    .then(res => this.setState({ response: res.data[0].Name }))
+    .catch(err => console.log(err));
   };
   
-   /*  handleSubmitBTN = async e => {
-        e.preventDefault();
-        const response = await fetch('/api/hello', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ post: 'Hello' }),
-        });
-        const body = await response.text();
-        this.setState({
-            respone : body
-        })
-    }; */
+  
   render() {
-    const errosStyles = {
-      display : this.state.isMessageValid ? "none" : "block",
-     color : 'red',
-    }
+    
     return (
       <div className="App">
         <div className="bg-contact100" style={ sectionStyle } >
@@ -152,7 +138,7 @@ class ContactForm extends Component {
                 <form className="contact100-form validate-form" onSubmit={this.handleSubmit}>
                   <span className="contact100-form-title">
                     Get in touch
-                    Body : {this.state.body} || Body 2 : {this.state.serverName}
+                    response : {this.state.response} 
                   </span>
                   <Field type="text" 
                          name="name" 
