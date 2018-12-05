@@ -4,6 +4,7 @@ export class Field extends React.Component {
 
     render(){
          return(
+             <div>
              <div className="wrap-input100 validate-input" data-validate = "Name is required">
                     { (this.props.type === "text") &&
                     <input className="input100 "
@@ -29,11 +30,14 @@ export class Field extends React.Component {
                       <i className={"fa " + this.props.icon} aria-hidden="true"></i>
                     </span> 
                     }
-                     <span style ={ {display : this.props.isValid ? "none" : "block",
-                    color : 'red'}}> 
-                    <i className={"fa fa-exclamation-triangle"} aria-hidden="true"></i> Mail is wrong</span>
+                    
             </div>
-                  
+            <span style ={ {display : this.props.isValid ? "none" : "block",
+                                    color : 'rgb(198, 17, 17, 0.5)',
+                                    marginTop: '10px',
+                                    fontSize: '0.9em'}}> 
+                    <i className={"fa fa-exclamation-triangle"} aria-hidden="true"></i> {this.props.name} is wrong</span>
+            </div>
          )
     }
 }

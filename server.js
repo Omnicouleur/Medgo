@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-
+const Sequelize = require('sequelize');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -10,8 +10,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 // Database connection
+localuri = 'postgres://postgres:123@localhost:5432/medgo'
 uri ='postgres://jepbowdbpgicwq:fb82eca5d5d6affe08fc3dbae0eb8247eb17913e57dc54e2e0341a6f281d49ef@ec2-54-75-231-3.eu-west-1.compute.amazonaws.com:5432/d41alm8l88a20h'
-const Sequelize = require('sequelize');
 const sequelize = new Sequelize(uri)
 sequelize
   .authenticate()
@@ -42,6 +42,7 @@ app.get('/api/hello', (req, res) => {
         return res.send(err)
     }
     else {
+   
         return res.json({
             data : users
         })
@@ -54,16 +55,18 @@ app.post('/api/world', (req, res) => {
   console.log(req.body);
 
   // Store message
-  Message.sync({force: true}).then(() => {
+   Message.sync().then(() => {
     return Message.create({
       Name: req.body.name,
       Email: req.body.email,
       Message: req.body.message
     });
-  });
-
+  }); 
+  //--------------------------------
+ 
+  //-------------------------------------------
   res.send(
-    `Message sent successfully`
+    'Message sent successfully'
   );
 });
 

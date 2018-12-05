@@ -14,27 +14,28 @@ const sectionStyle = {
 };
 
 
+var jsonMSGs =[{Name:'Ahmed'}]
 
 class ContactForm extends Component {
 
     constructor(props) {
       super(props);
-      this.state = {name: '0',
-                    email: "1",
+      
+      this.state = {name: '',
+                    email: "",
                     message: '',
                     isMailValid : true,
                     isMessageValid : true,
                     isNameValid: true,
-                    serverName: '',
-                    body: '',
-                    response: '',
-                    post: '',
                     responseToPost: '',
+                    isSuccessful : false,
+                    btnIsDisabled : true
     };
+    
     }
 
     componentDidMount() {
-     
+     this.fetchData();
     }
     handleUserInput = (e) => {
     const name = e.target.name;
@@ -64,6 +65,9 @@ class ContactForm extends Component {
       }
       else       e.target.className  = " success-input100 input100"
 
+      this.state.btnIsDisabled= !(this.state.isMailValid && 
+                this.state.isMessageValid &&
+                this.state.isNameValid )
     }
 
     valideMail = (mail) => {
@@ -77,7 +81,6 @@ class ContactForm extends Component {
       {
         this.setState ({isMailValid : false})
       return false;
-      
       }
     }
     valideMessage = (message) => {
@@ -91,18 +94,39 @@ class ContactForm extends Component {
       }
     }
     valideName = (name) => {
-      return true;
+      let nameformat = /^[a-zA-Z ]+$/
+      if( name.match(nameformat))
+      {
+          this.setState ({isNameValid : true})
+          return true;
+      }
+      else
+      {
+        this.setState ({isNameValid : false})
+      return false;
+      }
+      
     }
 
-
-  callApi = async () => {
-    const response = await fetch('/api/hello');
-    const body = await response.json();
-
-    if (response.status !== 200) throw Error(body.message);
-
-    return body;
-  };
+ 
+    fetchData = (e) => {
+      fetch('/api/hello')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`status ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(json => {
+        jsonMSGs = json
+      
+        
+      }).catch(e => {
+        this.setState({
+          response: `API call failed: ${e}`,
+        });
+      })
+    }
 
   handleSubmit = async e => {
     e.preventDefault();
@@ -117,16 +141,15 @@ class ContactForm extends Component {
     });
     const body = await response.text();
 
-    this.setState({ responseToPost: body });
-    
-    this.callApi()
-    .then(res => this.setState({ response: res.data[0].Name }))
-    .catch(err => console.log(err));
+    this.setState({ responseToPost: body,
+                    isSuccessful : true });
+
+    this.fetchData()
   };
   
-  
+
   render() {
-    
+
     return (
       <div className="App">
         <div className="bg-contact100" style={ sectionStyle } >
@@ -138,7 +161,6 @@ class ContactForm extends Component {
                 <form className="contact100-form validate-form" onSubmit={this.handleSubmit}>
                   <span className="contact100-form-title">
                     Get in touch
-                    response : {this.state.response} 
                   </span>
                   <Field type="text" 
                          name="name" 
@@ -166,18 +188,31 @@ class ContactForm extends Component {
                          isValid = {this.state.isMessageValid}/>
                   
                   <div className="container-contact100-form-btn">
-                    <input type="submit" value="send"  className="contact100-form-btn" />
-                   
-                      
-                    <p>{this.state.responseToPost}</p>
+                    <input type="submit" value="send"  className="contact100-form-btn" disabled={this.state.btnIsDisabled}/>
+                    <p style ={ {display : this.props.isSuccessful ? "none" : "block",
+                                  }}>  {this.state.responseToPost}</p>
                   </div>
                 </form>
               </div>
             </div>
         </div>
-
         
-
+           <div className="tbl-header">           
+                        
+       <table>  
+       { jsonMSGs.map(function(item,index) {
+                            return(
+                            
+                              <tr>
+                                <td>{item.Name}</td> 
+                                <td>{item.Email ? item.Email : ''}</td>
+                                <td>{item.Message ? item.Message : ''}</td>
+                            </tr>
+                         
+                            )
+                          })}
+</table>
+</div>
       </div>
     );
   }
