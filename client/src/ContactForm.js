@@ -9,12 +9,12 @@ import './vendor/css-hamburgers/hamburgers.min.css';
 import './vendor/select2/select2.min.css';
 import './css/util.css';
 import './css/main.css';
+
 const sectionStyle = {
     backgroundImage: 'url(' + Background + ')',
 };
 
-
-var jsonMSGs =[]
+var jsonMSGs =[] // will store the JSON object fetched from the server
 
 class ContactForm extends Component {
 
@@ -28,9 +28,10 @@ class ContactForm extends Component {
                     isMessageValid : true,
                     isNameValid: true,
                     responseToPost: '',
-                    isSuccessful : false,
-                    btnIsDisabled : true ,
-                    renderTable: false   };
+                    isSuccessful : false, // True if the formdata was sent to the server successfuly
+                    btnIsDisabled : true , // if true disables the send button if a field is not validated
+                    renderTable: false  // Becomes true after fetching data in order to display the Table
+                   };
 
     }
 
@@ -38,9 +39,9 @@ class ContactForm extends Component {
      this.fetchData();
     }
     handleUserInput = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    this.setState({[name]: value})
+      const name = e.target.name;
+      const value = e.target.value;
+      this.setState({[name]: value})
     }
     
     ValidateUserInput = (e) => {
@@ -60,49 +61,36 @@ class ContactForm extends Component {
           isValid = this.valideMessage(value)
           this.setState ({isMessageValid : isValid})
           break
-
         default:
         break;
       }
-        if (!isValid) {      e.target.className  = " error-input100 input100"
-      }
-      else       e.target.className  = " success-input100 input100"
-      
-      this.setState({
-        btnIsDisabled : !( 
-         this.valideName(this.state.name) 
-        && this.valideMessage(this.state.message) && this.valideMail(this.state.email))
+        if (!isValid)  
+           e.target.className  = " error-input100 input100"
+        else       e.target.className  = " success-input100 input100"
+        this.setState({
+        btnIsDisabled : !( this.valideName(this.state.name) 
+                            && this.valideMessage(this.state.message) 
+                            && this.valideMail(this.state.email))
       })
     }
 
     valideMail = (mail) => {
       const mailformat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/;
-      if( mail.match(mailformat))
-                 return true;
-      else      return false;
+      return mail.match(mailformat) 
     }
+      
     valideMessage = (message) => {
-      if (message === ''){
-          return false;
-      }
-      else {
-        return true;
-      }
+      return (!(message === '' )&& (message.length < 300))
     }
+
     valideName = (name) => {
       let nameformat = /^[a-zA-Z ]+$/
-      if( name.match(nameformat))
-      {
-          return true;
-      }
-      else
-      {
-      return false;
-      }
-      
+      return ( name.match(nameformat))
     }
+
+    // fetch The data stored in the DB 
     fetchData = (e) => {
-      fetch('/api/hello')
+      fetch('/api/fecth')
       .then(response => {
         if (!response.ok) {
           throw new Error(`status ${response.status}`);
@@ -120,23 +108,22 @@ class ContactForm extends Component {
         });
       })
     }
+
+    // send form data to the server
     handleSubmit = async e => {
-        
-      e.preventDefault();
-      const response = await fetch('/api/world', {
+        e.preventDefault();
+        const response = await fetch('/api/store', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ name: this.state.name, 
-                              email: this.state.email,
-                              message: this.state.message }),
+                               email: this.state.email,
+                               message: this.state.message }),
       });
       const body = await response.text();
-
       this.setState({ responseToPost: body,
                       isSuccessful : true });
-
       this.fetchData()
     };
     
@@ -154,7 +141,6 @@ class ContactForm extends Component {
                                   }}>
                   <span className="contact100-form-title">
                     Get in touch 
-                   
                   </span>
                   <Field type="text" 
                          name="name" 
@@ -164,7 +150,6 @@ class ContactForm extends Component {
                          value={this.state.name}
                          isValid = {this.state.isNameValid}/>
 
-                      
                   <Field type="text" 
                          name="email" 
                          icon="fa-envelope" 
@@ -172,7 +157,6 @@ class ContactForm extends Component {
                          onBlur = {(e) => {this.ValidateUserInput(e)}} 
                          value={this.state.email}
                          isValid = {this.state.isMailValid} />
-
                  
                   <Field type="textarea"
                          name="message"
@@ -183,7 +167,6 @@ class ContactForm extends Component {
                   
                   <div className="container-contact100-form-btn disabled">
                     <input type="submit" value="send"  className="contact100-form-btn" disabled={this.state.btnIsDisabled}/>
-                    
                   </div>
                 </form>
                 { /* ------------- Successfuly sent text -----------*/  }
@@ -193,13 +176,11 @@ class ContactForm extends Component {
                   
                     <i className={"fa  fa-check-square"} style={{fontSize : '6em', display: 'block' }} aria-hidden="true"></i>
                     <span>  Thank you! <br></br> Your message has been sent successfully </span>
-                
                 </div> 
-
               </div>
             </div>
         </div>
-        
+        { /* ------------- Table -----------*/  }
            {(this.state.renderTable) && <div className="tbl-header  table-responsive">           
                 <table className=" table">  
                       <thead>
@@ -229,5 +210,4 @@ class ContactForm extends Component {
     );
   }
 }
-
 export default ContactForm;

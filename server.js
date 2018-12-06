@@ -37,7 +37,7 @@ sequelize
   });
 
 // API calls
-app.get('/api/hello', (req, res) => {
+app.get('/api/fetch', (req, res) => {
   Message.findAll().then(((err, users) => {
     if (err){
         return res.send(err)
@@ -52,7 +52,7 @@ app.get('/api/hello', (req, res) => {
 }))
 });
 
-app.post('/api/world', (req, res) => {
+app.post('/api/store', (req, res) => {
   console.log(req.body);
 
   // Store message
@@ -63,9 +63,6 @@ app.post('/api/world', (req, res) => {
       Message: req.body.message
     });
   }); 
-  //--------------------------------
- 
-  //-------------------------------------------
   res.send(
     'Message sent successfully'
   );

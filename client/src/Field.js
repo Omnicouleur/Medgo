@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 export class Field extends React.Component {
 
     render(){
@@ -17,7 +18,7 @@ export class Field extends React.Component {
 
                     {(this.props.type === "textarea") &&
                     <textarea className={"input100 "} name="message" 
-                              placeholder="Message" 
+                              placeholder="Message (Max 300 caracters)" 
                               value = {this.props.value} 
                               onChange= {this.props.onchange}
                               onBlur = {this.props.onBlur}
@@ -42,6 +43,3 @@ export class Field extends React.Component {
          )
     }
 }
-Field.defaultProps = {
-    message: 'j',
-  };
