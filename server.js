@@ -11,8 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Database connection
 localuri = 'postgres://postgres:123@localhost:5432/medgo'
-uri1='postgres://jepbowdbpgicwq:fb82eca5d5d6affe08fc3dbae0eb8247eb17913e57dc54e2e0341a6f281d49ef@ec2-54-75-231-3.eu-west-1.compute.amazonaws.com:5432/d41alm8l88a20h'
-uri = 'postgres://txntskyxeqeqmp:3e4104546146988f12dcf906416ec0da1c722946a8017271e0f3f641bdb1e425@ec2-54-163-230-178.compute-1.amazonaws.com:5432/d46io50jvphktn'
+uri = 'postgres://ybculoiwujkqko:7fc9b53d5a0dda8c6317d76dc0a4059992c67489bf003c3db8852b213cd1c50f@ec2-54-197-249-140.compute-1.amazonaws.com:5432/d3q8mhq0er43t5'
 const sequelize = new Sequelize(uri)
 sequelize
   .authenticate()
