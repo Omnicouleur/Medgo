@@ -200,8 +200,8 @@ class ContactForm extends Component {
             </div>
         </div>
         
-           {(this.state.renderTable) && <div className="tbl-header">           
-                <table>  
+           {(this.state.renderTable) && <div className="tbl-header  table-responsive">           
+                <table className=" table">  
                       <thead>
                         <tr>
                           <th>Name</th>

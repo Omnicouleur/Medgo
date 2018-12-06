@@ -6,6 +6,9 @@ input:disabled,
 button[disabled]{
   cursor: not-allowed;
 }
+.table th {
+      border-top : 0 !important;
+}
 h1{
   font-size: 30px;
   color: #fff;
@@ -14,10 +17,7 @@ h1{
   text-align: center;
   margin-bottom: 15px;
 }
-table{
-  width:100%;
-  table-layout: fixed;
-}
+
 .tbl-header{
   background-color: rgba(255,255,255,0.3);
  }
