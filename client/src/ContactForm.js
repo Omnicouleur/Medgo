@@ -14,7 +14,7 @@ const sectionStyle = {
 };
 
 
-var jsonMSGs =[{Name:'Ahmed'}]
+var jsonMSGs =[]
 
 class ContactForm extends Component {
 
@@ -29,9 +29,8 @@ class ContactForm extends Component {
                     isNameValid: true,
                     responseToPost: '',
                     isSuccessful : false,
-                    btnIsDisabled : true
-    };
-    
+                    btnIsDisabled : true    };
+
     }
 
     componentDidMount() {
@@ -49,13 +48,13 @@ class ContactForm extends Component {
       let isValid= false;
       switch(name) {
         case 'email':
-          isValid=this.valideMail(value)
+          this.setState ({isMailValid : this.valideMail(value)})
           break
         case 'name':
-          isValid=this.valideName(value)
+          this.setState ({isNameValid : this.valideName(value)})
           break
         case 'message' : 
-          isValid=this.valideMessage(value)
+          this.setState ({isMessageValid : this.valideMessage(value)})
           break
 
         default:
@@ -64,32 +63,25 @@ class ContactForm extends Component {
         if (!isValid) {      e.target.className  = " error-input100 input100"
       }
       else       e.target.className  = " success-input100 input100"
-
-      this.state.btnIsDisabled= !(this.state.isMailValid && 
-                this.state.isMessageValid &&
-                this.state.isNameValid )
+      
+      this.setState({
+        btnIsDisabled : !( 
+         this.valideName(this.state.name) 
+        && this.valideMessage(this.state.message) && this.valideMail(this.state.email))
+      })
     }
 
     valideMail = (mail) => {
       const mailformat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/;
       if( mail.match(mailformat))
-      {
-          this.setState ({isMailValid : true})
-          return true;
-      }
-      else
-      {
-        this.setState ({isMailValid : false})
-      return false;
-      }
+                 return true;
+      else      return false;
     }
     valideMessage = (message) => {
       if (message === ''){
-        this.setState ({isMessageValid : false})
           return false;
       }
       else {
-        this.setState ({isMessageValid : true})
         return true;
       }
     }
@@ -97,18 +89,14 @@ class ContactForm extends Component {
       let nameformat = /^[a-zA-Z ]+$/
       if( name.match(nameformat))
       {
-          this.setState ({isNameValid : true})
           return true;
       }
       else
       {
-        this.setState ({isNameValid : false})
       return false;
       }
       
     }
-
- 
     fetchData = (e) => {
       fetch('/api/hello')
       .then(response => {
@@ -118,49 +106,51 @@ class ContactForm extends Component {
         return response.json();
       })
       .then(json => {
+        console.log('hello')
         jsonMSGs = json
-      
-        
+        console.log('bye')
+        console.log(json)
       }).catch(e => {
         this.setState({
           response: `API call failed: ${e}`,
         });
       })
     }
+    handleSubmit = async e => {
+        
+      e.preventDefault();
+      const response = await fetch('/api/world', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: this.state.name, 
+                              email: this.state.email,
+                              message: this.state.message }),
+      });
+      const body = await response.text();
 
-  handleSubmit = async e => {
-    e.preventDefault();
-    const response = await fetch('/api/world', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name: this.state.name, 
-                             email: this.state.email,
-                             message: this.state.message }),
-    });
-    const body = await response.text();
+      this.setState({ responseToPost: body,
+                      isSuccessful : true });
 
-    this.setState({ responseToPost: body,
-                    isSuccessful : true });
-
-    this.fetchData()
-  };
-  
-
+      this.fetchData()
+    };
+    
   render() {
-
     return (
       <div className="App">
         <div className="bg-contact100" style={ sectionStyle } >
             <div className="container-contact100">
-              <div className="wrap-contact100">
-                <div className="contact100-pic js-tilt" data-tilt>
+              <div className="wrap-contact100 row">
+                <div className="contact100-pic js-tilt col" data-tilt>
                   <img src={require('./images/img-01.png')}  alt="IMG"/>
                 </div>
-                <form className="contact100-form validate-form" onSubmit={this.handleSubmit}>
+                { /* -----------------FORM  -------------------------------- */}
+                <form className="contact100-form validate-form" onSubmit={this.handleSubmit} style ={ {display : this.state.isSuccessful ? "none" : "block",
+                                  }}>
                   <span className="contact100-form-title">
-                    Get in touch
+                    Get in touch 
+                   
                   </span>
                   <Field type="text" 
                          name="name" 
@@ -189,30 +179,48 @@ class ContactForm extends Component {
                   
                   <div className="container-contact100-form-btn">
                     <input type="submit" value="send"  className="contact100-form-btn" disabled={this.state.btnIsDisabled}/>
-                    <p style ={ {display : this.props.isSuccessful ? "none" : "block",
-                                  }}>  {this.state.responseToPost}</p>
+                    
                   </div>
                 </form>
+                { /* ------------- Successfuly sent text -----------*/  }
+                <div className="col" style ={ {display : this.state.isSuccessful ? "block" : "none",
+                                   color : 'green' , fontSize : '2em' , fontWeight : 'bold' ,
+                                   alignSelf: 'center'  }}>
+                  
+                    <i className={"fa  fa-check-square"} style={{fontSize : '6em', display: 'block' }} aria-hidden="true"></i>
+                    <span>  Thank you! <br></br> Your message has been sent successfully </span>
+                
+                </div> 
+
               </div>
             </div>
         </div>
         
            <div className="tbl-header">           
-                        
-       <table>  
-       { jsonMSGs.map(function(item,index) {
-                            return(
-                            
-                              <tr>
-                                <td>{item.Name}</td> 
-                                <td>{item.Email ? item.Email : ''}</td>
-                                <td>{item.Message ? item.Message : ''}</td>
-                            </tr>
-                         
-                            )
-                          })}
-</table>
-</div>
+                <table>  
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Message</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                                  { jsonMSGs.map(function(item,index) {
+                                      return(
+                                      
+                                        <tr key={index}>
+                                          <td>{item.Name}</td> 
+                                          <td>{item.Email ? item.Email : ''}</td>
+                                          <td>{item.Message ? item.Message : ''}</td>
+                                      </tr>
+                                  
+                                      )
+                                    })}
+                      </tbody>
+                </table>
+          </div>
+      
       </div>
     );
   }
