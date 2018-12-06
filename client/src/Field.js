@@ -7,7 +7,7 @@ export class Field extends React.Component {
              <div>
              <div className="wrap-input100 validate-input" data-validate = "Name is required">
                     { (this.props.type === "text") &&
-                    <input className="input100 "
+                    <input className={"input100 "}
                            type="text" name={this.props.name} 
                            placeholder={this.props.name}
                            onBlur = {this.props.onBlur}
@@ -16,11 +16,12 @@ export class Field extends React.Component {
                     }
 
                     {(this.props.type === "textarea") &&
-                    <textarea className="input100 " name="message" 
+                    <textarea className={"input100 "} name="message" 
                               placeholder="Message" 
                               value = {this.props.value} 
                               onChange= {this.props.onchange}
-                              onBlur = {this.props.onBlur}/>
+                              onBlur = {this.props.onBlur}
+                              rows="10"/>
                     }
 
                     <span className="focus-input100"> </span>

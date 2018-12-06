@@ -49,13 +49,16 @@ class ContactForm extends Component {
       let isValid= false;
       switch(name) {
         case 'email':
-          this.setState ({isMailValid : this.valideMail(value)})
+          isValid = this.valideMail(value)
+          this.setState ({isMailValid : isValid})
           break
         case 'name':
-          this.setState ({isNameValid : this.valideName(value)})
+          isValid = this.valideName(value)
+          this.setState ({isNameValid : isValid})
           break
-        case 'message' : 
-          this.setState ({isMessageValid : this.valideMessage(value)})
+        case 'message' :
+          isValid = this.valideMessage(value)
+          this.setState ({isMessageValid : isValid})
           break
 
         default:
@@ -178,7 +181,7 @@ class ContactForm extends Component {
                          value={this.state.message}
                          isValid = {this.state.isMessageValid}/>
                   
-                  <div className="container-contact100-form-btn">
+                  <div className="container-contact100-form-btn disabled">
                     <input type="submit" value="send"  className="contact100-form-btn" disabled={this.state.btnIsDisabled}/>
                     
                   </div>
