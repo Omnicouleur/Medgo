@@ -29,7 +29,8 @@ class ContactForm extends Component {
                     isNameValid: true,
                     responseToPost: '',
                     isSuccessful : false,
-                    btnIsDisabled : true    };
+                    btnIsDisabled : true ,
+                    renderTable: false   };
 
     }
 
@@ -106,10 +107,10 @@ class ContactForm extends Component {
         return response.json();
       })
       .then(json => {
-        console.log('hello')
         jsonMSGs = json
-        console.log('bye')
-        console.log(json)
+        this.setState({
+          renderTable: true
+        })
       }).catch(e => {
         this.setState({
           response: `API call failed: ${e}`,
@@ -196,7 +197,7 @@ class ContactForm extends Component {
             </div>
         </div>
         
-           <div className="tbl-header">           
+           {(this.state.renderTable) && <div className="tbl-header">           
                 <table>  
                       <thead>
                         <tr>
@@ -220,7 +221,7 @@ class ContactForm extends Component {
                       </tbody>
                 </table>
           </div>
-      
+           }
       </div>
     );
   }
