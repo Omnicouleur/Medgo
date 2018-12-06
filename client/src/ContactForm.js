@@ -90,7 +90,7 @@ class ContactForm extends Component {
 
     // fetch The data stored in the DB 
     fetchData = (e) => {
-      fetch('/api/fecth')
+      fetch('/api/fetch')
       .then(response => {
         if (!response.ok) {
           throw new Error(`status ${response.status}`);
